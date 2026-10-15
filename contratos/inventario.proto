@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package tienda.inventario;
+
+// Servicio de Inventario: existencias por producto.
+service Inventario {
+  // Unario: cuántas piezas hay de un producto.
+  rpc ConsultarExistencia (ExistenciaRequest) returns (Existencia);
+  // Streaming: la existencia de un producto mientras se vende (4 actualizaciones).
+  rpc VigilarExistencia (ExistenciaRequest) returns (stream Existencia);
+}
+
+message ExistenciaRequest {
+  string clave = 1;
+}
+
+message Existencia {
+  string clave = 1;
+  int32 cantidad = 2;
+  string almacen = 3;
+}

@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package tienda.pagos;
+
+// Servicio de Pagos: estado de los pedidos y cobros.
+service Pagos {
+  // Unario: ¿el pedido ya está pagado y por cuánto?
+  rpc ConsultarPago (PedidoRequest) returns (EstadoPago);
+  // Streaming: los pasos de un cobro, uno por segundo.
+  rpc SeguirCobro (CobroRequest) returns (stream PasoCobro);
+}
+
+message PedidoRequest {
+  string pedido = 1;
+}
+
+message EstadoPago {
+  string pedido = 1;
+  bool pagado = 2;
+  int32 monto_centavos = 3;
+}
+
+message CobroRequest {
+  string pedido = 1;
+  int32 monto_centavos = 2;
+}
+
+message PasoCobro {
+  int32 numero = 1;
+  string paso = 2;
+}

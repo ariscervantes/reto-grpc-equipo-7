@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package tienda.envios;
+
+// Servicio de Envíos: cotización y rastreo de paquetes.
+service Envios {
+  // Unario: costo y días de entrega para un código postal y un peso.
+  rpc CotizarEnvio (CotizacionRequest) returns (Cotizacion);
+  // Streaming: los estados de un paquete, uno por segundo.
+  rpc Rastrear (GuiaRequest) returns (stream EstadoEnvio);
+}
+
+message CotizacionRequest {
+  string codigo_postal = 1;
+  int32 peso_gramos = 2;
+}
+
+message Cotizacion {
+  int32 costo_centavos = 1;
+  int32 dias = 2;
+}
+
+message GuiaRequest {
+  string guia = 1;
+}
+
+message EstadoEnvio {
+  string guia = 1;
+  string estado = 2;
+  string lugar = 3;
+}

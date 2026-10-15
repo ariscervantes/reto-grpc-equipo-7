@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package tienda.resenas;
+
+// Servicio de Reseñas: opiniones de los clientes sobre los productos.
+service Resenas {
+  // Unario: promedio de estrellas de un producto.
+  rpc PromedioProducto (ResenaRequest) returns (Promedio);
+  // Streaming: las reseñas de un producto, una por una.
+  rpc ListarResenas (ResenaRequest) returns (stream Resena);
+}
+
+message ResenaRequest {
+  string clave = 1;
+}
+
+message Promedio {
+  string clave = 1;
+  float promedio = 2;
+  int32 total = 3;
+}
+
+message Resena {
+  string autor = 1;
+  int32 estrellas = 2;
+  string comentario = 3;
+}

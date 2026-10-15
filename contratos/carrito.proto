@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package tienda.carrito;
+
+// Servicio de Carrito: lo que cada cliente lleva en su carrito.
+service Carrito {
+  // Unario: total a pagar y número de artículos de un cliente.
+  rpc TotalCarrito (CarritoRequest) returns (Total);
+  // Streaming: los artículos del carrito, uno por uno.
+  rpc VerArticulos (CarritoRequest) returns (stream Articulo);
+}
+
+message CarritoRequest {
+  string usuario = 1;
+}
+
+message Total {
+  string usuario = 1;
+  int32 total_centavos = 2;
+  int32 articulos = 3;
+}
+
+message Articulo {
+  string clave = 1;
+  int32 cantidad = 2;
+  int32 subtotal_centavos = 3;
+}
