@@ -1,3 +1,18 @@
+import time
+import grpc
+from concurrent import futures
+
+import resenas_pb2
+import resenas_pb2_grpc
+
+# Datos de ejemplo (no hace falta base de datos)
+RESENAS = {
+    "P001": [("ana", 5, "Rapida y ligera"), ("luis", 4, "Buena bateria")],
+    "P002": [("mayte", 3, "Cumple")],
+    "P003": [("said", 5, "Gran sonido"), ("omar", 4, "Comodos"), ("ana", 2, "Se desconectan")],
+    "P005": [("diego", 4, "Suena fuerte")],
+}
+
 class ResenasServicio(resenas_pb2_grpc.ResenasServicer):
 
     def PromedioProducto(self, request, context):
@@ -33,3 +48,11 @@ class ResenasServicio(resenas_pb2_grpc.ResenasServicer):
                 estrellas=estrellas,
                 comentario=comentario,
             )
+            
+
+servidor = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+resenas_pb2_grpc.add_ResenasServicer_to_server(ResenasServicio(), servidor)
+servidor.add_insecure_port("[::]:50053")
+servidor.start()
+print("Servidor de Reseñas escuchando en el puerto 50053...")
+servidor.wait_for_termination()
