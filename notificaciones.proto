@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package tienda.notificaciones;
+
+// Servicio de Notificaciones: avisos para los clientes.
+service Notificaciones {
+  // Unario: registra un aviso nuevo para un cliente.
+  rpc EnviarAviso (Aviso) returns (Confirmacion);
+  // Streaming: entrega, uno por uno, los avisos pendientes de un cliente.
+  rpc Suscribirse (Suscripcion) returns (stream Aviso);
+}
+
+message Aviso {
+  string destinatario = 1;
+  string mensaje = 2;
+}
+
+message Confirmacion {
+  string folio = 1;
+  bool entregado = 2;
+}
+
+message Suscripcion {
+  string destinatario = 1;
+}
