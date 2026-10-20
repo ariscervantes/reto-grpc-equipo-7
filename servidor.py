@@ -26,10 +26,16 @@ class ResenasServicio(resenas_pb2_grpc.ResenasServicer):
 
         total = len(resenas)
         suma = sum(estrellas for _, estrellas, _ in resenas)
+        
+        # NUEVO: Calcular cuántas reseñas tienen exactamente 5 estrellas
+        # Usamos una generación con condición para contar cuántas veces aparece el 5
+        cinco_estrellas = sum(1 for _, estrellas, _ in resenas if estrellas == 5)
+
         return resenas_pb2.Promedio(
             clave=request.clave,
             promedio=suma / total,
             total=total,
+            cinco_estrellas=cinco_estrellas, # NUEVO: Enviamos el campo
         )
 
     def ListarResenas(self, request, context):
