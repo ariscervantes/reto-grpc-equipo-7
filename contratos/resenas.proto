@@ -18,6 +18,7 @@ message Promedio {
   string clave = 1;
   float promedio = 2;
   int32 total = 3;
+  int32 cinco_estrellas = 4;
 }
 
 message Resena {

@@ -1,6 +1,3 @@
-# Servidor del servicio Reseñas · Reto de integración · Unidad II
-# Contrato: resenas.proto · Puerto: 50053
-# Antes de correrlo: bash compilar.sh
 import time
 import grpc
 from concurrent import futures
@@ -16,10 +13,10 @@ RESENAS = {
     "P005": [("diego", 4, "Suena fuerte")],
 }
 
-
 class ResenasServicio(resenas_pb2_grpc.ResenasServicer):
 
     def PromedioProducto(self, request, context):
+        # UNARIO: regresa UNA caja con return
         resenas = RESENAS.get(request.clave)
         if not resenas:
             context.abort(
@@ -29,13 +26,20 @@ class ResenasServicio(resenas_pb2_grpc.ResenasServicer):
 
         total = len(resenas)
         suma = sum(estrellas for _, estrellas, _ in resenas)
+        
+        # NUEVO: Calcular cuántas reseñas tienen exactamente 5 estrellas
+        # Usamos una generación con condición para contar cuántas veces aparece el 5
+        cinco_estrellas = sum(1 for _, estrellas, _ in resenas if estrellas == 5)
+
         return resenas_pb2.Promedio(
             clave=request.clave,
             promedio=suma / total,
             total=total,
+            cinco_estrellas=cinco_estrellas, # NUEVO: Enviamos el campo
         )
 
     def ListarResenas(self, request, context):
+        # STREAMING: entrega VARIAS cajas con yield
         resenas = RESENAS.get(request.clave)
         if not resenas:
             context.abort(
@@ -50,7 +54,7 @@ class ResenasServicio(resenas_pb2_grpc.ResenasServicer):
                 estrellas=estrellas,
                 comentario=comentario,
             )
-
+            
 
 servidor = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
 resenas_pb2_grpc.add_ResenasServicer_to_server(ResenasServicio(), servidor)
